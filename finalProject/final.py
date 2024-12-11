@@ -49,7 +49,7 @@ def main_page():
 def page2():
     @st.cache_data
     def load_data():
-        df = pd.read_csv('fortune500.csv')
+        df = pd.read_csv('finalProject/fortune500.csv')
         df['STATE'] = df['STATE'].str.upper()
         if df.empty:
             st.error("Loaded data is empty.")
