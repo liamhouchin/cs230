@@ -22,7 +22,7 @@ path = "/Users/liamhouchin/Library/CloudStorage/OneDrive-BentleyUniversity/cs230
 def main_page():
     # [ST4] image for the sidebar, this function is on every file in my code
     def side_bar_img():
-        image_path = "fortune500.jpg"
+        image_path = "finalProject/fortune500.jpg"
         st.sidebar.image(image_path, use_container_width=True)
 
     # [ST4]
