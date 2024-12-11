@@ -12,7 +12,6 @@ and plot similarities among them along the way.
 # Library Imports
 from enum import unique
 import pandas as pd
-import matplotlib.pyplot as plt
 import streamlit as st
 import numpy as np
 import pydeck as pdk
