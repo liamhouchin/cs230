@@ -251,7 +251,7 @@ def page2():
 def page3():
     @st.cache_data
     def read_data():
-        df=pd.read_csv("fortune500.csv")
+        df=pd.read_csv("finalProject/fortune500.csv")
         df.dropna(subset=["LATITUDE", "LONGITUDE","ADDRESS","REVENUES","PROFIT"],inplace=True)
         return df
 
