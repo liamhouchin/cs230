@@ -23,7 +23,7 @@ def main_page():
     # [ST4] image for the sidebar, this function is on every file in my code
     def side_bar_img():
         image_url = "https://raw.githubusercontent.com/liamhouchin/cs230/main/images/fortune500.jpg"
-        st.sidebar.image(image_path, use_container_width=True)
+        st.sidebar.image(image_url, use_container_width=True)
 
     # [ST4]
     def load_main_page():
