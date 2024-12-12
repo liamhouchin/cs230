@@ -2,4 +2,4 @@ pandas
 streamlit
 numpy
 pydeck
-matplotlib.pyplot
+matplotlib
