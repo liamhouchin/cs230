@@ -23,7 +23,7 @@ path = "/Users/liamhouchin/Library/CloudStorage/OneDrive-BentleyUniversity/cs230
 def main_page():
     # [ST4] image for the sidebar, this function is on every file in my code
     def side_bar_img():
-        image_path = path + "fortune500.jpg"
+        image_path = "finalProject/fortune500.jpg"
         st.sidebar.image(image_path, use_container_width=True)
 
     # [ST4]
@@ -50,7 +50,7 @@ def main_page():
 def page2():
     @st.cache_data
     def load_data():
-        df = pd.read_csv(path + 'fortune500.csv')
+        df = pd.read_csv('finalProject/fortune500.csv')
         df['STATE'] = df['STATE'].str.upper()
         if df.empty:
             st.error("Loaded data is empty.")
@@ -250,7 +250,7 @@ def page2():
 def page3():
     @st.cache_data
     def read_data():
-        df=pd.read_csv(path + "fortune500.csv")
+        df=pd.read_csv("finalProject/fortune500.csv")
         df.dropna(subset=["LATITUDE", "LONGITUDE","ADDRESS","REVENUES","PROFIT"],inplace=True)
         return df
 
