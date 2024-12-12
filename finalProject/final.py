@@ -15,6 +15,7 @@ import pandas as pd
 import streamlit as st
 import numpy as np
 import pydeck as pdk
+import matplotlib.pyplot as plt
 
 # File Path
 path = "/Users/liamhouchin/Library/CloudStorage/OneDrive-BentleyUniversity/cs230/pythonProject/finalProject/"
@@ -22,7 +23,7 @@ path = "/Users/liamhouchin/Library/CloudStorage/OneDrive-BentleyUniversity/cs230
 def main_page():
     # [ST4] image for the sidebar, this function is on every file in my code
     def side_bar_img():
-        image_path = "finalProject/fortune500.jpg"
+        image_path = path + "fortune500.jpg"
         st.sidebar.image(image_path, use_container_width=True)
 
     # [ST4]
@@ -32,10 +33,8 @@ def main_page():
         st.markdown("""
         **Title:** Fortune 500 Companies  
         **Type:** Profits, locations, employees, & more  
-        **Description:** The purpose of this web page is to visualize the data from a set of Fortune 500 companies.
-        It uses a combination of charts, drop-down menus, integrated maps, and pivot tables to exemplify the correlation
-        between specific factors of the dataset. Specific functions that were used/investigated were:
-        Revenues, Profits, Employee populations, Location [state/county]
+        **Description:** This dataset includes comprehensive information about Fortune 500 companies in the United States,
+        focusing on revenues & profits, employees, and location
         """)
         st.header("About the Dataset")
         st.markdown("""
@@ -51,7 +50,7 @@ def main_page():
 def page2():
     @st.cache_data
     def load_data():
-        df = pd.read_csv('finalProject/fortune500.csv')
+        df = pd.read_csv(path + 'fortune500.csv')
         df['STATE'] = df['STATE'].str.upper()
         if df.empty:
             st.error("Loaded data is empty.")
@@ -119,7 +118,6 @@ def page2():
         st.dataframe(results_df)
         return results_df
 
-    # Speaking point
     # [VIZ2]
     # [PY1, PY4] Filter New England companies using list comprehension and lambda
     def ne_companies(data, column_name="STATE"):
@@ -131,24 +129,23 @@ def page2():
         #comprehension using lambda
         data["in_ne"] = data[column_name].apply(lambda x: "Yes" if x in new_england_states else "No")
         filtered_data = data[data["in_ne"]=="Yes"]
-        ne_counts = filtered_data[column_name].value_counts()
 
-        results_df = pd.DataFrame({
-            'State': ne_counts.index.str.upper(),
-            'Company Count': ne_counts.values
-        })
+        ne_counts = filtered_data[column_name].value_counts().reset_index()
+        ne_counts.columns = ["State", "Company Count"]
 
-        for state in new_england_states:
-            if state.upper() not in results_df['State'].tolist():
-                results_df = pd.concat(
-                    [results_df, pd.DataFrame({'State': [state.upper()], 'Company Count': [0]})],
-                    ignore_index=True
-                )
+        ne_counts = ne_counts[ne_counts["Company Count"].apply(lambda x: x > 0)]
 
-        st.write("### New England Companies by State")
-        st.dataframe(ne_counts)
-
-        return results_df
+        fig, ax = plt.subplots()
+        ax.pie(
+            ne_counts["Company Count"],
+            labels=ne_counts["State"].str.upper(),
+            autopct=lambda p: f'{p:.1f}%',
+            startangle=90
+        )
+        ax.set_title("New England Companies by State")
+        st.pyplot(fig)
+        
+        return ne_counts
 
 # Speaking Point
     # [DA6] Interactive pivot tables
@@ -164,7 +161,7 @@ def page2():
             return None
 
         # Employee range calculation
-        if data[employee_col].dropna().empty:
+        if data[employee_col].dropna().empty: # ChatGPT Provided
             st.warning("No valid employee data available for the selected state. Default ranges will be used.")
             employee_min, employee_max = 0, 1000
         else:
@@ -195,7 +192,7 @@ def page2():
             st.dataframe(data.head())
             return None
 
-        # Debug: Verify Employee_Range creation
+        # Debug: Verify Employee_Range creation ChatGPT Provided
         if data["Employee_Range"].isnull().all():
             st.error("Failed to create 'Employee_Range'. Check your bins or data.")
             st.write(data.head())
@@ -227,9 +224,9 @@ def page2():
         filtered_data = filtered_data[["NAME", "CITY", "STATE", "RANK","EMPLOYEES", "REVENUES","Employee_Range"]]
         pivot_table = pd.pivot_table(
             filtered_data,
-            values="EMPLOYEES",  # Aggregate by sum of employees
-            index=["EMPLOYEES", "RANK", "NAME", "CITY", "STATE", "REVENUES"],  # Make Employee_Range the index
-            aggfunc="count"  # Use sum for total employees
+            values="EMPLOYEES",
+            index=["EMPLOYEES", "RANK", "NAME", "CITY", "STATE", "REVENUES"],
+            aggfunc="count"
         )
         pivot_table.rename(columns={"EMPLOYEES": "Total Employees"}, inplace=True)
 
@@ -253,7 +250,7 @@ def page2():
 def page3():
     @st.cache_data
     def read_data():
-        df=pd.read_csv("finalProject/fortune500.csv")
+        df=pd.read_csv(path + "fortune500.csv")
         df.dropna(subset=["LATITUDE", "LONGITUDE","ADDRESS","REVENUES","PROFIT"],inplace=True)
         return df
 
@@ -283,16 +280,16 @@ def page3():
                     sorted(states),
                     index = states.index("CA") if "CA" in states else 0
                     )
-        st.write(f"Selected state: {selected_state}")  # Debugging output
+        st.write(f"Selected state: {selected_state}")  # Debugging output ChatGPT Provided
 
         # Filter data based on the selected state
         filtered_data = data[data['STATE'] == selected_state]
-        st.write(f"Filtered data rows: {filtered_data.shape[0]}")  # Debugging output
+        st.write(f"Filtered data rows: {filtered_data.shape[0]}")  # Debugging output ChatGPT Provided
 
         if not filtered_data.empty:
             # Categorize profits
             filtered_data = categorize_profits(filtered_data)
-            st.write("Profit categories created successfully.")  # Debugging output
+            st.write("Profit categories created successfully.")  # Debugging output ChatGPT Provided
 
             weighted_lat = (filtered_data['LATITUDE'] * filtered_data['REVENUES']).sum() / filtered_data['REVENUES'].sum()
             weighted_lon = (filtered_data['LONGITUDE'] * filtered_data['REVENUES']).sum() / filtered_data['REVENUES'].sum()
