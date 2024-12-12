@@ -32,8 +32,10 @@ def main_page():
         st.markdown("""
         **Title:** Fortune 500 Companies  
         **Type:** Profits, locations, employees, & more  
-        **Description:** This dataset includes comprehensive information about Fortune 500 companies in the United States,
-        focusing on revenues & profits, employees, and location
+        **Description:** The purpose of this web page is to visualize the data from a set of Fortune 500 companies.
+        It uses a combination of charts, drop-down menus, integrated maps, and pivot tables to exemplify the correlation
+        between specific factors of the dataset. Specific functions that were used/investigated were:
+        Revenues, Profits, Employee populations, Location [state/county]
         """)
         st.header("About the Dataset")
         st.markdown("""
